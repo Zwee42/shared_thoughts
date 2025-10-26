@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Shared Thoughts - Home{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h1>Shared Thoughts</h1>
+    <p class="subtitle">Anonymous thought sharing</p>
+    
+    <div class="instructions">
+        <h2>How it works:</h2>
+        <ul>
+            <li>Visit any URL like <code>/abc</code> or <code>/my-thoughts</code> to create a unique thought board</li>
+            <li>Share thoughts anonymously on each board</li>
+            <li>Each board maintains its own collection of thoughts</li>
+            <li>Thoughts appear as sticky notes positioned randomly on the board</li>
+        </ul>
+    </div>
+    
+</div>
+
+<script>
+function goToBoard() {
+    const boardName = document.getElementById('board-name').value.trim();
+    if (boardName) {
+        window.location.href = '/' + encodeURIComponent(boardName);
+    }
+}
+
+document.getElementById('board-name').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        goToBoard();
+    }
+});
+</script>
+{% endblock %}
