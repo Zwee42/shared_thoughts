@@ -1,5 +1,5 @@
 // Global variables
-let thoughtInput, currentLayout = 'grid';
+let thoughtInput, currentLayout = 'spiral';
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -33,7 +33,7 @@ function initBoard() {
     loadThoughts();
     
     // Auto-refresh thoughts every 30 seconds
-    setInterval(loadThoughts, 30000);
+    setInterval(loadThoughts, 500);
 }
 
 function initSettings() {
