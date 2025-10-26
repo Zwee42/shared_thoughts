@@ -26,7 +26,7 @@ function initBoard() {
     });
     
     // Load saved layout preference
-    const savedLayout = localStorage.getItem('thoughtLayout') || 'grid';
+    const savedLayout = 'spiral';
     setLayout(savedLayout);
     
     // Load existing thoughts
@@ -65,7 +65,7 @@ function initSettings() {
     });
     
     // Set initial radio state
-    const savedLayout = localStorage.getItem('thoughtLayout') || 'grid';
+    const savedLayout = localStorage.getItem('thoughtLayout') || 'spiral,';
     document.querySelector(`input[value="${savedLayout}"]`).checked = true;
 }
 
