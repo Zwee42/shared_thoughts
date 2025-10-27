@@ -1,12 +1,12 @@
 // Global variables
-let thoughtInput, currentLayout = 'spiral';
+let thoughtInput, currentLayout = 'spiral', socket;
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Check if we're on a board page
     if (window.boardId) {
         initBoard();
-        initSettings();
+        initWebSocket();
     }
 });
 
@@ -31,42 +31,28 @@ function initBoard() {
     
     // Load existing thoughts
     loadThoughts();
-    
-    // Auto-refresh thoughts every 30 seconds
-    setInterval(loadThoughts, 500);
 }
 
-function initSettings() {
-    const settingsToggle = document.getElementById('settings-toggle');
-    const settingsContent = document.getElementById('settings-content');
-    const layoutRadios = document.querySelectorAll('input[name="layout"]');
+function initWebSocket() {
+    // Initialize Socket.IO connection
+    socket = io();
     
-    // Toggle settings panel
-    settingsToggle.addEventListener('click', function() {
-        settingsContent.classList.toggle('open');
+    socket.emit('join_board', { board_id: window.boardId });
+    
+    socket.on('new_thought', function(thought) {
+        addThoughtToBoard(thought, true);
     });
     
-    // Close settings when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.settings-panel')) {
-            settingsContent.classList.remove('open');
-        }
+    socket.on('disconnect', function() {
+        console.log('Disconnected from server');
     });
     
-    // Layout change handlers
-    layoutRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.checked) {
-                setLayout(this.value);
-                localStorage.setItem('thoughtLayout', this.value);
-                repositionThoughts();
-            }
-        });
+    // Handle reconnection
+    socket.on('connect', function() {
+        console.log('Connected to server');
+        // Rejoin the board room on reconnect
+        socket.emit('join_board', { board_id: window.boardId });
     });
-    
-    // Set initial radio state
-    const savedLayout = localStorage.getItem('thoughtLayout') || 'spiral,';
-    document.querySelector(`input[value="${savedLayout}"]`).checked = true;
 }
 
 function setLayout(layout) {
@@ -252,9 +238,7 @@ function submitThought() {
         if (data.error) {
             alert('Error: ' + data.error);
         } else {
-            // Add the new thought to the board
-            addThoughtToBoard(data, true);
-            // Clear the input field
+            // Clear the input field - thought will be added via WebSocket
             thoughtInput.value = '';
         }
     })
@@ -320,17 +304,9 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Add some visual feedback when hovering over thoughts
-document.addEventListener('mouseover', function(e) {
-    if (e.target.closest('.thought')) {
-        const thought = e.target.closest('.thought');
-        // No special z-index handling needed with flexbox
-    }
-});
-
-document.addEventListener('mouseout', function(e) {
-    if (e.target.closest('.thought')) {
-        const thought = e.target.closest('.thought');
-        // No special z-index handling needed with flexbox
+// Cleanup when leaving the page
+window.addEventListener('beforeunload', function() {
+    if (socket && window.boardId) {
+        socket.emit('leave_board', { board_id: window.boardId });
     }
 });

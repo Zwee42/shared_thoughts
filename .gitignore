@@ -1,2 +1,4 @@
 thoughts.db
 .env
+_pycache_/
+*.pyc

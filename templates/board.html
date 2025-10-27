@@ -3,22 +3,6 @@
 {% block title %}Thought Board: {{ board_id }}{% endblock %}
 
 {% block content %}
-<!-- <div class="settings-panel" id="settings-panel">
-    <button class="settings-toggle" id="settings-toggle">⚙️</button>
-    <div class="settings-content" id="settings-content">
-        <h4>Layout Mode</h4>
-        <div class="layout-options">
-            <label class="radio-option">
-                <input type="radio" name="layout" value="grid" checked>
-                <span>Grid Flow</span>
-            </label>
-            <label class="radio-option">
-                <input type="radio" name="layout" value="spiral">
-                <span>Spiral</span>
-            </label>
-        </div>
-    </div>
-</div> -->
 
 <div class="board-container" id="board-container">
     <div class="thought-board grid-layout" id="thought-board">
@@ -33,9 +17,10 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script>
 // Pass board_id and texts to JavaScript
 window.boardId = '{{ board_id }}';
-window.texts = {{ texts|tojson }};
+window.texts = '{{ texts|tojson }}';
 </script>
 {% endblock %}

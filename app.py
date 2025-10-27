@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import sqlite3
 import os
 from datetime import datetime
@@ -12,6 +13,9 @@ secret = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret
+
+# Initialize SocketIO
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Database setup
 DATABASE = 'thoughts.db'
@@ -86,12 +90,17 @@ def add_thought():
     conn.commit()
     conn.close()
     
-    return jsonify({
+    # Emit the new thought to all users in the board room
+    thought_data = {
         'id': thought['id'],
         'content': thought['content'],
         'color': thought['color'],
         'timestamp': thought['timestamp']
-    })
+    }
+    
+    socketio.emit('new_thought', thought_data, room=board_id)
+    
+    return jsonify(thought_data)
 
 @app.route('/get_thoughts/<board_id>')
 def get_thoughts(board_id):
@@ -113,5 +122,22 @@ def get_thoughts(board_id):
     
     return jsonify(thoughts_list)
 
+# WebSocket event handlers
+@socketio.on('join_board')
+def on_join_board(data):
+    board_id = data['board_id']
+    join_room(board_id)
+    print(f"User joined board: {board_id}")
+
+@socketio.on('leave_board')
+def on_leave_board(data):
+    board_id = data['board_id']
+    leave_room(board_id)
+    print(f"User left board: {board_id}")
+
+@socketio.on('disconnect')
+def on_disconnect():
+    print('User disconnected')
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    socketio.run(app, debug=True, host='0.0.0.0')
