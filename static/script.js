@@ -233,8 +233,9 @@ function submitThought() {
     
     // Disable submit button to prevent double submission
     const submitBtn = document.getElementById('submit-thought');
+    const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sharing...';
+    submitBtn.textContent = window.texts ? (window.texts.submit_button === 'Dela' ? 'Delar...' : 'Sharing...') : 'Sharing...';
     
     fetch('/add_thought', {
         method: 'POST',
@@ -264,7 +265,7 @@ function submitThought() {
     .finally(() => {
         // Re-enable submit button
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Share';
+        submitBtn.textContent = originalText;
     });
 }
 

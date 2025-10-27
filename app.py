@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import random
 from dotenv import load_dotenv
+from lang import get_user_language, get_all_texts
 
 load_dotenv()
 
@@ -45,6 +46,9 @@ def index():
 
 @app.route('/<board_id>')
 def board(board_id):
+    lang = get_user_language()
+    texts = get_all_texts(lang)
+    
     conn = get_db_connection()
     thoughts = conn.execute(
         'SELECT * FROM thoughts WHERE board_id = ? ORDER BY timestamp',
@@ -52,7 +56,7 @@ def board(board_id):
     ).fetchall()
     conn.close()
     
-    return render_template('board.html', board_id=board_id, thoughts=thoughts)
+    return render_template('board.html', board_id=board_id, thoughts=thoughts, texts=texts)
 
 @app.route('/add_thought', methods=['POST'])
 def add_thought():
@@ -110,4 +114,4 @@ def get_thoughts(board_id):
     return jsonify(thoughts_list)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
