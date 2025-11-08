@@ -233,6 +233,17 @@ body {
     position: relative;
 }
 
+/* List Layout Mode */
+.thought-board.list-layout {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .bottom-controls {
     position: fixed;
     bottom: 20px;
@@ -316,9 +327,16 @@ body {
     padding: 8px 12px;
     transform-origin: center;
     text-align: center;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
-    text-overflow: ellipsis;
+}
+
+/* List layout thoughts */
+.list-layout .thought {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    padding: 15px 20px;
 }
 
 .thought:hover {

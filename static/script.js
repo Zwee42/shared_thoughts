@@ -25,9 +25,11 @@ function initBoard() {
         }
     });
     
-    // Load saved layout preference
-    const savedLayout = 'spiral';
-    setLayout(savedLayout);
+    // Get layout from URL parameter, default to spiral
+    const urlParams = new URLSearchParams(window.location.search);
+    const layoutParam = urlParams.get('layout');
+    const selectedLayout = layoutParam === 'list' ? 'list' : 'spiral';
+    setLayout(selectedLayout);
     
     // Load existing thoughts
     loadThoughts();
@@ -60,7 +62,7 @@ function setLayout(layout) {
     const thoughtBoard = document.getElementById('thought-board');
     
     // Remove existing layout classes
-    thoughtBoard.classList.remove('grid-layout', 'spiral-layout');
+    thoughtBoard.classList.remove('grid-layout', 'spiral-layout', 'list-layout');
     
     // Add new layout class
     thoughtBoard.classList.add(layout + '-layout');
@@ -72,7 +74,7 @@ function repositionThoughts() {
     if (currentLayout === 'spiral') {
         positionThoughtsInSpiral(thoughts);
     } else {
-        // Grid layout doesn't need repositioning - CSS handles it
+        // Grid and list layouts don't need repositioning - CSS handles it
         thoughts.forEach(thought => {
             thought.style.left = '';
             thought.style.top = '';
@@ -212,17 +214,17 @@ function submitThought() {
         return; // Just don't submit if empty
     }
     
-    if (content.length > 500) {
-        alert('Thought is too long! Please keep it under 500 characters.');
-        return;
-    }
-    
     // Disable submit button to prevent double submission
     const submitBtn = document.getElementById('submit-thought');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = window.texts ? (window.texts.submit_button === 'Dela' ? 'Delar...' : 'Sharing...') : 'Sharing...';
     
+    // Parse texts if it's a JSON string
+    const texts = typeof window.texts === 'string' ? JSON.parse(window.texts) : window.texts;
+    console.log('Parsed texts:', texts);
+    submitBtn.textContent = texts && texts.submitting_button ? texts.submitting_button : 'Sharing...';
+        console.log('Submitting thought:', content);
+        console.log('Submitting button text:', submitBtn.textContent);
     fetch('/add_thought', {
         method: 'POST',
         headers: {

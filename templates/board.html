@@ -5,14 +5,14 @@
 {% block content %}
 
 <div class="board-container" id="board-container">
-    <div class="thought-board grid-layout" id="thought-board">
+    <div class="thought-board spiral-layout" id="thought-board">
         <!-- Thoughts will be dynamically loaded here -->
     </div>
 </div>
 
 <div class="bottom-controls">
     <div class="thought-input-container">
-        <input type="text" id="thought-input" placeholder="{{ texts.add_thought_placeholder }}" maxlength="500">
+        <input type="text" id="thought-input" placeholder="{{ texts.add_thought_placeholder }}">
         <button id="submit-thought" class="submit-btn">{{ texts.submit_button }}</button>
     </div>
 </div>

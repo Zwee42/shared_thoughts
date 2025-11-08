@@ -5,10 +5,12 @@ LANGUAGES = {
     'en': {
         'add_thought_placeholder': 'Share a thought...',
         'submit_button': 'Share',
+        'submitting_button': 'Sharing...',
     },
     'sv': {
         'add_thought_placeholder': 'Dela en tanke...',
         'submit_button': 'Dela',
+        'submitting_button': 'Delar...',
     }
 }
 
