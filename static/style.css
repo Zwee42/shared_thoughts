@@ -255,7 +255,7 @@ body {
 .thought-input-container {
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: flex-end;
     background: white;
     padding: 8px;
     border-radius: 25px;
@@ -271,6 +271,11 @@ body {
     border-radius: 20px;
     min-width: 250px;
     background: transparent;
+    resize: none;
+    max-height: 150px;
+    overflow-y: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.4;
 }
 
 #thought-input::placeholder {

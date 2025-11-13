@@ -1,5 +1,6 @@
 // Global variables
-let thoughtInput, currentLayout = 'spiral', socket;
+const defaultLayout = "list";
+let thoughtInput, currentLayout = defaultLayout, socket;
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -17,18 +18,24 @@ function initBoard() {
     // Event listeners
     document.getElementById('submit-thought').addEventListener('click', submitThought);
     
-    // Submit on Enter
+    // Submit on Enter (Shift+Enter for new line)
     thoughtInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             submitThought();
         }
     });
     
+    // Auto-resize textarea as user types
+    thoughtInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+    
     // Get layout from URL parameter, default to spiral
     const urlParams = new URLSearchParams(window.location.search);
     const layoutParam = urlParams.get('layout');
-    const selectedLayout = layoutParam === 'list' ? 'list' : 'spiral';
+    const selectedLayout = layoutParam || defaultLayout; // === 'list' ? 'list' : 'spiral';
     setLayout(selectedLayout);
     
     // Load existing thoughts
